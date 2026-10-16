@@ -1,8 +1,10 @@
-const Anthropic = require('@anthropic-ai/sdk');
+const OpenAI = require('openai');
 const { embedText } = require('./embeddingService');
 const { searchSimilarChunks } = require('./vectorSearchService');
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const SYSTEM_PROMPT = `You are FactoryIQ, an industrial knowledge assistant for factory workers,
 maintenance technicians, and safety officers.
@@ -18,9 +20,13 @@ Rules:
    date that has clearly passed), flag it explicitly as a warning.`;
 
 /**
- * Full RAG pipeline: embed question -> vector search -> build prompt -> ask Claude
+ * Full RAG pipeline: embed question -> vector search -> build prompt -> ask OpenAI
  */
 async function answerQuestion(question) {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is not configured in server/.env');
+  }
+
   // 1. Embed the user's question
   const queryEmbedding = await embedText(question);
 
@@ -47,18 +53,18 @@ async function answerQuestion(question) {
 
   const userPrompt = `Context from company documents:\n\n${contextBlock}\n\n---\n\nQuestion: ${question}`;
 
-  // 4. Ask Claude to answer using only the retrieved context
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 1024,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: userPrompt }],
+  // 4. Ask OpenAI to answer using only the retrieved context
+  const response = await openai.chat.completions.create({
+    model: process.env.OPENAI_MODEL || 'gpt-6-luna',
+    temperature: 1,
+    max_completion_tokens: 1024,
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: userPrompt },
+    ],
   });
 
-  const answerText = response.content
-    .filter((block) => block.type === 'text')
-    .map((block) => block.text)
-    .join('\n');
+  const answerText = response.choices?.[0]?.message?.content || '';
 
   // 5. Format sources for the UI to render as citations
   const sources = relevantChunks.map((chunk) => ({

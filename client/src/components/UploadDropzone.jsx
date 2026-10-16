@@ -3,15 +3,16 @@ import { useDropzone } from 'react-dropzone';
 import { UploadCloud, Loader2 } from 'lucide-react';
 import { uploadDocument } from '../api/client.js';
 
-export default function UploadDropzone({ onUploaded }) {
+export default function UploadDropzone({ onUploaded, onUpload }) {
   const [uploading, setUploading] = useState(false);
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
       setUploading(true);
       try {
+        const uploadFn = onUpload || uploadDocument;
         for (const file of acceptedFiles) {
-          await uploadDocument(file);
+          await uploadFn(file);
         }
         onUploaded?.();
       } catch (err) {
@@ -20,7 +21,7 @@ export default function UploadDropzone({ onUploaded }) {
         setUploading(false);
       }
     },
-    [onUploaded]
+    [onUploaded, onUpload]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

@@ -34,7 +34,7 @@ export default function DemoLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-navy text-ink">
+    <div className="min-h-screen bg-navy text-ink font-mono">
       <header className="border-b border-steeldim/40">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link to="/" className="flex items-center gap-2">

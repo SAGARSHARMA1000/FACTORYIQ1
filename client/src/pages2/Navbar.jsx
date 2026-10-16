@@ -90,7 +90,7 @@ export default function Navbar() {
               <FactoryIqLogo />
             </Link>
             <span
-              className="mt-1 text-[8.5px] sm:text-[9.5px] font-medium tracking-[0.22em] text-zinc-300 uppercase select-none"
+              className="mt-1 text-[8.5px] sm:text-[9.5px] font-medium tracking-[0.22em] text-zinc-500 uppercase select-none"
               style={{ letterSpacing: '0.22em' }}
             >
               INDUSTRIAL KNOWLEDGE INTELLIGENCE
@@ -145,7 +145,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setActiveTab(link.id)}
                     className={`relative font-mono text-[11px] sm:text-[11.5px] font-bold tracking-[0.14em] uppercase transition-colors select-none ${
-                      isActive ? 'text-white' : 'text-zinc-300 hover:text-white'
+                      isActive ? 'text-zinc-200' : 'text-zinc-500 hover:text-white'
                     }`}
                     style={{ letterSpacing: '0.14em' }}
                   >

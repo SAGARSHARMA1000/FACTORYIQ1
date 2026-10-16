@@ -22,7 +22,7 @@ function Pill({ tone = 'muted', children }) {
 
 function ListBody({ items }) {
   return (
-    <ul className="divide-y divide-steeldim/40">
+    <ul className="divide-y divide-steeldim/40 font-mono">
       {items.map((item) => (
         <li key={item.title} className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
           <div className="min-w-0">
@@ -140,7 +140,7 @@ export default function PanelRenderer({ panel, role }) {
   }
 
   return (
-    <section className={`rounded-xl border border-steeldim/50 bg-card px-6 py-5 ${panel.span === 2 ? 'lg:col-span-2' : ''}`}>
+    <section className={`font-mono rounded-xl border border-steeldim/50 bg-card px-6 py-5 ${panel.span === 2 ? 'lg:col-span-2' : ''}`}>
       <div className="mb-4">
         <h2 className="text-[14px] font-medium text-white">{panel.title}</h2>
         {panel.subtitle && <p className="mt-0.5 text-[12px] text-inkdim">{panel.subtitle}</p>}

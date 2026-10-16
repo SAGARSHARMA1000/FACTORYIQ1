@@ -4,6 +4,7 @@ import {attachAuthInterceptor} from './authInterceptor.js';
 const api = axios.create({
   baseURL: '/api', // proxied to the backend by vite.config.js in dev
 });
+attachAuthInterceptor(api);
 attachAuthInterceptor(axios);
 
 // ── Documents ──────────────────────────────────────────────
@@ -11,9 +12,7 @@ export const uploadDocument = (file, category) => {
   const formData = new FormData();
   formData.append('file', file);
   if (category) formData.append('category', category);
-  return api.post('/documents/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  return api.post('/documents/upload', formData);
 };
 
 export const getDocuments = () => api.get('/documents');

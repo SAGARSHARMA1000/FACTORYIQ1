@@ -1,8 +1,11 @@
+const fs = require('fs');
 const asyncHandler = require('express-async-handler');
 const Document = require('../models/Document');
 const Chunk = require('../models/Chunk');
 const { processDocument } = require('../services/ingestionPipeline');
 const logAudit = require('../utils/audit').logAudit;
+const { can } = require('../config/roles');
+
 // POST /api/documents/upload
 const uploadDocument = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -18,8 +21,9 @@ const uploadDocument = asyncHandler(async (req, res) => {
     filePath: req.file.path,
     category: req.body.category || 'other',
     status: 'processing',
+    uploadedBy: String(req.user._id), // NEW: needed for the own-vs-any delete rule
   });
-  await logAudit(req, 'document.upload', req.file.originalname, req.user);
+  await logAudit(req, 'document.upload', req.file.originalname);
 
   // Kick off ingestion in the background — don't make the user wait
   // for OCR/embedding to finish before getting a response.
@@ -54,12 +58,22 @@ const getDocumentById = asyncHandler(async (req, res) => {
 const deleteDocument = asyncHandler(async (req, res) => {
   const doc = await Document.findById(req.params.id);
   if (!doc) {
-    res.status(404);
-    throw new Error('Document not found');
+    return res.status(404).json({ message: 'Document not found' });
   }
-  await logAudit(req, 'document.delete', doc.originalName);
+
+ // NEW: engineers and safety officers may delete only their own uploads.
+  // Only roles with 'documents:delete:any' (admin) may delete someone else's.
+  const isOwner = doc.uploadedBy === String(req.user._id);
+  if (!isOwner && !can(req.user.role, 'documents:delete:any')) {
+    return res.status(403).json({ message: 'You can only delete your own documents' });
+  }
+
   await Chunk.deleteMany({ documentId: doc._id });
   await doc.deleteOne();
+  await logAudit(req, 'document.delete', doc.originalName); // NEW: logged after it succeeds
+
+
+  
   res.json({ message: 'Document and its chunks deleted' });
 });
 

@@ -6,6 +6,7 @@ import FactorySilhouette from './FactorySilhouette.jsx';
 import HudOverlay from './HudOverlay.jsx';
 import AiHudCards from './AiHudCards.jsx';
 import DataParticleField from './DataParticleField.jsx';
+import ScrollCue from '../components/ScrollCue.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -202,17 +203,18 @@ export default function ScrollStoryHero() {
           <br />
           <span className="text-teal">One intelligent layer.</span>
         </h1>
-        <p className="mt-6 max-w-lg text-[15px] text-inkdim leading-relaxed">
+        <p className="mt-6 max-w-lg text-[15px] text-inkdim leading-relaxed font-mono">
           FactoryIQ reads your plant's documents, drawings, and records — so your
           team can just ask, instead of searching.
         </p>
-        {/* <div className="mt-9 flex items-center gap-4">
+        {/* < className="mt-9 flex items-center gap-4">
           <a
             href="/app"
             className="bg-teal text-navy text-sm font-medium px-6 py-3 rounded-md hover:bg-teal/90 transition-colors"
           >
             Try the live demo
           </a> */}
+          
           {/* <a
             href="#how-it-works"
             className="text-sm text-inkdim hover:text-white transition-colors px-2"
@@ -225,7 +227,7 @@ export default function ScrollStoryHero() {
           <span>Scroll</span>
           <span className="w-px h-8 bg-gradient-to-b from-inkdim/60 to-transparent" />
         </div> */}
-          
+{/*           
 <div className="absolute bottom-5 sm:bottom-7 left-1/2
                   -translate-x-1/2 z-20">
     <button
@@ -264,7 +266,9 @@ export default function ScrollStoryHero() {
                          animate-scroll-beam" />
       </span>
     </button>
-  </div>
+  </div> */}
+  <ScrollCue />
+
       </div>
 
        <style>{`

@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Trash2, RefreshCw, FileText } from 'lucide-react';
 import UploadDropzone from '../components/UploadDropzone.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
-import { getDocuments, deleteDocument } from '../api/client.js';
+import { getDocuments, deleteDocument, uploadDocument } from '../api/client.js';
 
 function formatBytes(bytes) {
   if (!bytes) return '—';
@@ -20,6 +20,8 @@ export default function DocumentsPage() {
     try {
       const { data } = await getDocuments();
       setDocuments(data);
+    } catch (err) {
+      console.error('Failed to load documents:', err);
     } finally {
       setLoading(false);
     }
@@ -31,6 +33,10 @@ export default function DocumentsPage() {
     const interval = setInterval(fetchDocuments, 5000);
     return () => clearInterval(interval);
   }, [fetchDocuments]);
+
+  const handleUpload = async (file) => {
+    return await uploadDocument(file);
+  };
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this document and all its indexed chunks?')) return;
@@ -55,7 +61,7 @@ export default function DocumentsPage() {
         </button>
       </header>
 
-      <UploadDropzone onUploaded={fetchDocuments} />
+      <UploadDropzone onUpload={handleUpload} onUploaded={fetchDocuments} />
 
       <div className="mt-8">
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">

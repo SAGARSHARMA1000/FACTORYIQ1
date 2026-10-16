@@ -4,22 +4,51 @@
 @tailwind utilities;
 
 :root {
-  --font-heading: 'Space Grotesk', sans-serif;
-  --font-body: 'Geist', sans-serif;
-  --font-mono: 'Geist Mono', monospace;
+  --font-display: 'Chakra Petch', 'Space Grotesk', sans-serif;
+  --font-heading: 'Chakra Petch', 'Space Grotesk', sans-serif;
+  --font-body: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Mono', 'Geist Mono', monospace;
 }
 
-
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  letter-spacing: -0.015em;
 }
 
 body {
   background-color: #0a1628;
   color: #dce8f0;
   font-family: var(--font-body);
-  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; */
-  
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+code, kbd, samp, pre, .font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-heading, .font-display {
+  font-family: var(--font-heading);
+}
+
+.font-body, .font-sans {
+  font-family: var(--font-body);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 ::-webkit-scrollbar {
@@ -60,6 +89,34 @@ body {
 
 .animate-scroll-beam {
   animation: scroll-beam 2s ease-in-out infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.02);
+  }
+}
+
+.animate-float-card {
+  animation: float-slow 5s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-subtle 3.5s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -129,3 +186,109 @@ body {
     cursor: auto;
   }
 }
+
+/* ==========================================================================
+   Dashboard Responsive Layout & Sidebar Media Queries
+   ========================================================================== */
+
+/* Laptop & Desktop screens (min-width: 1024px) */
+@media screen and (min-width: 1024px) {
+  .dashboard-layout {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .dashboard-sidebar-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 16rem; /* 256px */
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 30;
+    transform: none !important;
+  }
+
+  .dashboard-sidebar-backdrop {
+    display: none !important;
+  }
+
+  .dashboard-mobile-toggle {
+    display: none !important;
+  }
+
+  .dashboard-main-area {
+    flex: 1 1 0%;
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* Tablets and Mobile Phones (max-width: 1023.98px) */
+@media screen and (max-width: 1023.98px) {
+  .dashboard-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+  }
+
+  .dashboard-sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 16rem;
+    max-width: 80vw;
+    height: 100%;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+  }
+
+  .dashboard-sidebar-wrapper.is-open {
+    transform: translateX(0);
+  }
+
+  .dashboard-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(6, 13, 24, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 45;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .dashboard-sidebar-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .dashboard-mobile-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dashboard-main-area {
+    width: 100%;
+    flex: 1 1 0%;
+  }
+}
+
+/* Small mobile devices (phones max-width: 640px) */
+@media screen and (max-width: 640px) {
+  .dashboard-sidebar-wrapper {
+    width: 85vw;
+  }
+}
+
